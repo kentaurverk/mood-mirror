@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#07080a">
+    <title data-i18n="pageTitle">Mood Mirror — Live expression signals</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='italian-toggle-1') }}">
+  </head>
+  <body>
+    <div class="ambient ambient-a"></div>
+    <div class="ambient ambient-b"></div>
+
+    <main class="shell">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="Mood Mirror home">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
+          <span>MOOD<br>MIRROR</span>
+        </a>
+        <div class="topbar-meta">
+          <span class="privacy"><i></i><span data-i18n="privacy">ON-DEVICE SESSION</span></span>
+          <button class="language-toggle" id="languageButton" type="button" aria-label="Passa all'italiano" data-language="en">
+            <span class="language-active">EN</span><b>/</b><span>IT</span>
+          </button>
+          <button class="icon-button" id="soundButton" type="button" aria-label="Toggle sounds" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10v4h3l4 3V7L8 10H5Zm10.5-1.5a5 5 0 0 1 0 7M18 6a9 9 0 0 1 0 12"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <section class="hero">
+        <div class="intro">
+          <span class="eyebrow"><span data-i18n="eyebrow">LIVE EXPRESSION LAB</span> <b>01</b></span>
+          <h1><span data-i18n="heroLine1">Your face.</span><br><em data-i18n="heroLine2">In full color.</em></h1>
+          <p data-i18n="heroCopy">Turn on your camera and watch visible expression cues become a living signal map. Nothing is recorded.</p>
+        </div>
+
+        <div class="status-orbit" aria-hidden="true">
+          <span data-i18n="realtime">REAL-TIME</span>
+          <div class="orbit-core"><i></i></div>
+        </div>
+      </section>
+
+      <section class="dashboard">
+        <article class="camera-card panel">
+          <div class="panel-head">
+            <div>
+              <span class="micro-label"><span data-i18n="liveFeed">01 / LIVE FEED</span></span>
+              <h2 data-i18n="expressionCapture">Expression capture</h2>
+            </div>
+            <div class="panel-actions">
+              <button class="mode-toggle" id="dogModeButton" type="button" aria-pressed="false">
+                <span class="toggle-track"><i></i></span>
+                <span data-i18n="dogMode">DOG MODE</span>
+              </button>
+              <div class="live-pill" id="livePill"><i></i><span>STANDBY</span></div>
+            </div>
+          </div>
+
+          <div class="stage" id="stage">
+            <video id="video" autoplay muted playsinline></video>
+            <img id="dogImage" class="dog-image" src="{{ url_for('static', filename='images/dog/neutral.png') }}" alt="Neutral dog expression">
+            <div class="camera-thumbnail" id="cameraThumbnail" aria-label="Your face is the source for this dog expression" data-i18n-aria="thumbnailAria">
+              <canvas id="thumbnailCanvas" width="320" height="240"></canvas>
+              <span><i></i> <span data-i18n="yourFaceSource">YOUR FACE / SOURCE</span></span>
+            </div>
+            <canvas id="overlay"></canvas>
+            <div class="scan-line"></div>
+            <div class="stage-placeholder" id="placeholder">
+              <div class="aperture"><span></span></div>
+              <strong data-i18n="cameraWaiting">Camera is waiting</strong>
+              <small data-i18n="cameraPermission">Your browser will ask for permission</small>
+            </div>
+            <span class="corner corner-tl"></span><span class="corner corner-tr"></span>
+            <span class="corner corner-bl"></span><span class="corner corner-br"></span>
+          </div>
+
+          <div class="controls">
+            <button class="primary-button" id="cameraButton" type="button">
+              <span class="button-icon">●</span>
+              <span class="button-copy"><small data-i18n="readyWhenYouAre">READY WHEN YOU ARE</small><strong data-i18n="startCamera">START CAMERA</strong></span>
+              <span class="button-arrow">↗</span>
+            </button>
+            <button class="secondary-button" id="demoButton" type="button" data-i18n="tryDemo">TRY DEMO</button>
+          </div>
+
+          <p class="camera-note"><span>⊘</span> <span data-i18n="cameraNote">Frames are analyzed during this session and are never saved.</span></p>
+        </article>
+
+        <article class="readout-card panel" data-mood="neutral" id="readout">
+          <div class="panel-head">
+            <div>
+              <span class="micro-label"><span data-i18n="signalReadout">02 / SIGNAL READOUT</span></span>
+              <h2 data-i18n="visibleExpression">Visible expression</h2>
+            </div>
+            <span class="accuracy-tag" data-i18n="approximate">APPROXIMATE</span>
+          </div>
+
+          <div class="main-signal" aria-live="polite">
+            <div class="emoji-shell"><span id="moodEmoji">◉</span><i></i></div>
+            <div class="mood-copy">
+              <span class="mood-kicker" id="moodKicker" data-i18n="awaitingSignal">AWAITING SIGNAL</span>
+              <h3 id="moodLabel">Neutral</h3>
+              <p id="moodPhrase" data-i18n="awaitingCopy">Let’s see what your expression is giving.</p>
+            </div>
+            <div class="confidence-dial" id="confidenceDial" style="--value: 0">
+              <div><strong id="confidence">—</strong><small data-i18n="signal">SIGNAL</small></div>
+            </div>
+          </div>
+
+          <div class="signal-grid" id="signalGrid" aria-label="Expression signal scores" data-i18n-aria="signalScores"></div>
+
+          <div class="timeline">
+            <div class="timeline-head"><span data-i18n="recentPulse">RECENT PULSE</span><span id="sampleCount">0 SAMPLES</span></div>
+            <canvas id="history" height="66"></canvas>
+          </div>
+
+          <div class="disclaimer">
+            <span>i</span>
+            <p><strong data-i18n="disclaimerLead">A face is not a mind reader.</strong> <span data-i18n="disclaimerCopy">This playful demo estimates visible expressions—not feelings, intent, personality, or mental health.</span></p>
+          </div>
+        </article>
+      </section>
+
+      <footer>
+        <span data-i18n="footerStudy">MM—01 / EXPRESSION SIGNAL STUDY</span>
+        <span data-i18n="footerModel">PYTHON + HSEMOTION ONNX</span>
+      </footer>
+    </main>
+
+    <canvas id="capture" width="640" height="480" hidden></canvas>
+    <script src="{{ url_for('static', filename='app.js', v='italian-toggle-1') }}"></script>
+  </body>
+</html>

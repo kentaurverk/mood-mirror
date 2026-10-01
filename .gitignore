@@ -1,0 +1,22 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.zip
+.DS_Store
+Thumbs.db
+# Downloaded model weights stay local; scripts/download_models.py verifies them.
+src/mood-mirror-flask/models/*.task
+src/mood-mirror-flask/models/*.onnx
+keystore.properties
+src/mood-mirror-android/local.properties
+# Signing material, regardless of where it is placed within this project.
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.pem
+*.key
+src/mood-mirror-android/.gradle/
+src/mood-mirror-android/build/
+src/mood-mirror-android/app/build/
